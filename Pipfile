@@ -1,0 +1,22 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+ipykernel = "==5.3.0"
+
+[packages]
+imutils = "==0.5.3"
+keras = "==2.4.2"
+opencv-python = "==4.2.0.*"
+matplotlib = "==3.2.2"
+numpy = "==1.18.5"
+pillow = "==7.1.2"
+prompt-toolkit = "==3.0.5"
+scikit-learn = "==0.23.1"
+tensorflow = "==2.2.0"
+tensorflowjs = "==2.0.1"
+
+[requires]
+python_version = "3.8"
