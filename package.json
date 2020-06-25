@@ -1,0 +1,40 @@
+{
+  "name": "app",
+  "version": "0.0.1",
+  "description": "Face Mask Detection",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "github.com/ariefrahmansyah/face-mask-detection"
+  },
+  "keywords": [
+    "face-mask-detection",
+    "keras",
+    "tensorflow",
+    "tensorflowjs"
+  ],
+  "author": "ariefrahmansyah",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.10.3",
+    "@babel/plugin-transform-runtime": "^7.10.3",
+    "babel-preset-env": "^1.7.0",
+    "parcel-bundler": "^1.12.4",
+    "parcel-plugin-static-files-copy": "^2.4.3"
+  },
+  "dependencies": {
+    "@tensorflow-models/blazeface": "0.0.5",
+    "@tensorflow/tfjs": "^2.0.1",
+    "@tensorflow/tfjs-data": "^2.0.1",
+    "@tensorflow/tfjs-node": "^2.0.1"
+  },
+  "scripts": {
+    "watch": "parcel index.html --open --no-hmr",
+    "build": "parcel build index.html --no-minify --target browser --public-url ."
+  },
+  "staticFiles": {
+    "staticPath": [
+      "models/tfjs"
+    ]
+  }
+}

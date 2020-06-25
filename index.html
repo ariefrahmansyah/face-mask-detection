@@ -1,0 +1,30 @@
+<html>
+<head>
+  <title>Face Mask Detection</title>
+
+  <style>
+    .camView {
+      position: relative;
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="camView">
+    <video id="video" width="640" height="480" playsinline style="
+      -webkit-transform: scaleX(-1);
+      transform: scaleX(-1);
+      width: auto;
+      height: auto;">
+    </video>
+    <canvas id="output"></canvas>
+  </div>
+
+  <script src="./index.js"></script>
+</body>
+</html>
