@@ -40,7 +40,7 @@ async function loadFaceDetectionModel() {
 
 let maskDetectionModel;
 async function loadMaskDetectionModel() {
-  maskDetectionModel = await tf.loadLayersModel('/model.json');
+  maskDetectionModel = await tf.loadLayersModel('./model.json');
 }
 
 async function getImage() {
