@@ -64,23 +64,24 @@ const annotateBoxes = false;
 const offset = tf.scalar(127.5);
 
 async function renderPrediction() {
+  let img = tf.tidy(() => tf.browser.fromPixels(video));
+
   let faces = [];
   try {
-    faces = await faceDetectionModel.estimateFaces(video, returnTensors, flipHorizontal, annotateBoxes);
+    faces = await faceDetectionModel.estimateFaces(img, returnTensors, flipHorizontal, annotateBoxes);
   } catch (e) {
     console.error("estimateFaces:", e);
     return;
   }
+
   // console.log("faces", faces);
 
   if (faces.length > 0) {
     for (let i = 0; i < faces.length; i++) {
       let predictions = [];
 
-      let face = tf.browser.fromPixels(video)
-        .resizeNearestNeighbor([224, 224])
-        .toFloat();
-      face = face.sub(offset).div(offset).expandDims();
+      let face = tf.tidy(() => img.resizeNearestNeighbor([224, 224])
+        .toFloat().sub(offset).div(offset).expandDims(0));
 
       try {
         predictions = await maskDetectionModel.predict(face).data();
@@ -103,10 +104,9 @@ async function renderPrediction() {
       canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
       canvasCtx.fillRect(start[0], start[1], size[0], size[1]);
     }
-    // return;
   }
 
-  await tf.nextFrame();
+  img.dispose();
   requestAnimationFrame(renderPrediction);
 }
 
