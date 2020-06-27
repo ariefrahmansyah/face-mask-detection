@@ -29,7 +29,7 @@
     "@tensorflow/tfjs-node": "^2.0.1"
   },
   "scripts": {
-    "watch": "parcel index.html --open --no-hmr",
+    "watch": "parcel index.html --no-hmr",
     "build": "parcel build index.html --no-minify --target browser --public-url ."
   },
   "staticFiles": {

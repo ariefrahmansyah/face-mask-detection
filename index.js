@@ -35,12 +35,20 @@ async function setupCanvas() {
 
 let faceDetectionModel;
 async function loadFaceDetectionModel() {
-  faceDetectionModel = await blazeface.load();
+  console.log("loading face detection model");
+  await blazeface.load().then(m => {
+    faceDetectionModel = m;
+    console.log("face detection model loaded");
+  });
 }
 
 let maskDetectionModel;
 async function loadMaskDetectionModel() {
-  maskDetectionModel = await tf.loadLayersModel('./model.json');
+  console.log("loading mask detection model");
+  await tf.loadLayersModel('./model.json').then(m => {
+    maskDetectionModel = m;
+    console.log("mask detection model loaded");
+  });
 }
 
 async function getImage() {
@@ -50,12 +58,13 @@ async function getImage() {
   return img;
 }
 
-async function renderPrediction() {
-  const returnTensors = false;
-  const flipHorizontal = true;
-  const annotateBoxes = false;
+const returnTensors = false;
+const flipHorizontal = true;
+const annotateBoxes = false;
+const offset = tf.scalar(127.5);
 
-  let faces;
+async function renderPrediction() {
+  let faces = [];
   try {
     faces = await faceDetectionModel.estimateFaces(video, returnTensors, flipHorizontal, annotateBoxes);
   } catch (e) {
@@ -66,18 +75,13 @@ async function renderPrediction() {
 
   if (faces.length > 0) {
     for (let i = 0; i < faces.length; i++) {
+      let predictions = [];
+
       let face = tf.browser.fromPixels(video)
         .resizeNearestNeighbor([224, 224])
         .toFloat();
-      // face = tf.image.resizeBilinear(face, [224, 224]);
-      // face = tf.cast(face, 'float32');
-      // face = tf.tensor4d(Array.from(face.dataSync()), [1, 224, 224, 3])
-      let offset = tf.scalar(127.5);
-      face = face.sub(offset)
-        .div(offset)
-        .expandDims();
+      face = face.sub(offset).div(offset).expandDims();
 
-      let predictions;
       try {
         predictions = await maskDetectionModel.predict(face).data();
       } catch (e){
@@ -91,16 +95,18 @@ async function renderPrediction() {
       const end = faces[i].bottomRight;
       const size = [end[0] - start[0], end[1] - start[1]];
 
-      canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
       canvasCtx.fillStyle = "rgba(255, 0, 0, 0.5)";
       if (predictions.length > 0 && predictions[0] > predictions[1]) {
         canvasCtx.fillStyle = "rgba(0, 255, 0, 0.5)";
       }
+
+      canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
       canvasCtx.fillRect(start[0], start[1], size[0], size[1]);
     }
     // return;
   }
 
+  await tf.nextFrame();
   requestAnimationFrame(renderPrediction);
 }
 
