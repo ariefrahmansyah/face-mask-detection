@@ -2,7 +2,7 @@ import * as tf from '@tensorflow/tfjs';
 import * as tfd from '@tensorflow/tfjs-data';
 import * as blazeface from '@tensorflow-models/blazeface';
 
-let video, videoWidth, videoHeight, webcam;
+let video, videoWidth, videoHeight;
 async function setupCamera() {
   video = document.getElementById('video');
 
@@ -51,7 +51,9 @@ const flipHorizontal = true;
 const annotateBoxes = false;
 const offset = tf.scalar(127.5);
 
-const decisionThreshold = 0.95;
+const decisionThreshold = 0.9;
+
+const loadingModel = document.getElementById('loading-model');
 
 async function renderPrediction() {
   // Get image from webcame
@@ -92,27 +94,35 @@ async function renderPrediction() {
 
       canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
 
-      canvasCtx.fillStyle = "rgba(255, 111, 0, 0.85)";
-      canvasCtx.fillRect(start[0], start[1] - 23, size[0], 23);
-
+      let faceBoxStyle = "rgba(255, 0, 0, 0.25)";
       let label = "without mask";
-      let boxStyle = "rgba(255, 0, 0, 0.25)";
-      if (predictions.length > 0 && predictions[0] > decisionThreshold) {
-        label = `with mask: ${Math.round(predictions[0] * 100)}%`;
-        boxStyle = "rgba(0, 255, 0, 0.25)";
+      if (predictions.length > 0) {
+        if (predictions[0] > decisionThreshold) {
+          faceBoxStyle = "rgba(0, 255, 0, 0.25)";
+          label = `with mask: ${Math.round(predictions[0] * 100)}%`;
+        } else {
+          label = `without mask: ${Math.round(predictions[1] * 100)}%`;
+        }
+
+        // Render label and its box
+        canvasCtx.fillStyle = "rgba(255, 111, 0, 0.85)";
+        canvasCtx.fillRect(start[0], start[1] - 23, size[0], 23);
+        canvasCtx.font = "18px Raleway";
+        canvasCtx.fillStyle = "rgba(255, 255, 255, 1)";
+        canvasCtx.fillText(label, end[0] + 5, start[1] - 5);
       }
 
-      canvasCtx.font = "18px Raleway";
-      canvasCtx.fillStyle = "rgba(255, 255, 255, 1)";
-      canvasCtx.fillText(label, end[0] + 5, start[1] - 5);
-
-      canvasCtx.fillStyle = boxStyle;
+      canvasCtx.fillStyle = faceBoxStyle;
       canvasCtx.fillRect(start[0], start[1], size[0], size[1]);
     }
   }
 
   img.dispose();
   requestAnimationFrame(renderPrediction);
+
+  if (loadingModel.innerHTML !== "") {
+    loadingModel.innerHTML = "";
+  }
 }
 
 async function main() {
