@@ -99,9 +99,9 @@ async function renderPrediction() {
       if (predictions.length > 0) {
         if (predictions[0] > decisionThreshold) {
           faceBoxStyle = "rgba(0, 255, 0, 0.25)";
-          label = `with mask: ${Math.round(predictions[0] * 100)}%`;
+          label = `with mask: ${Math.floor(predictions[0] * 1000) / 10}%`;
         } else {
-          label = `without mask: ${Math.round(predictions[1] * 100)}%`;
+          label = `without mask: ${Math.floor(predictions[1] * 1000) / 10}%`;
         }
 
         // Render label and its box
