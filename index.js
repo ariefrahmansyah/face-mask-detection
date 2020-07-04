@@ -68,11 +68,9 @@ async function renderPrediction() {
     return;
   }
 
-  // console.log("faces", faces);
-
-  // Loop through all predicted faces and detect if mask used or not.
-  // Then highlight the faces into the live view.
   if (faces.length > 0) {
+    // TODO: Loop through all predicted faces and detect if mask used or not.
+    // RIght now, it only highlights the fisrt face into the live view. (See the break command below)
     for (let i = 0; i < faces.length; i++) {
       let predictions = [];
 
@@ -82,7 +80,7 @@ async function renderPrediction() {
       try {
         predictions = await maskDetectionModel.predict(face).data();
       } catch (e){
-        console.log("maskDetection:", e);
+        console.error("maskDetection:", e);
         return;
       }
 
@@ -114,6 +112,9 @@ async function renderPrediction() {
 
       canvasCtx.fillStyle = faceBoxStyle;
       canvasCtx.fillRect(start[0], start[1], size[0], size[1]);
+
+      // TODO: Loop through all detected faces instead of the first one.
+      break;
     }
   }
 

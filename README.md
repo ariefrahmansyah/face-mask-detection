@@ -1,5 +1,7 @@
 # Face Mask Detection
 
+[Try the app!](https://ariefrahmansyah.github.io/face-mask-detection)
+
 ## Prerequisites
 
 1. Python 3 -- for training the model.
